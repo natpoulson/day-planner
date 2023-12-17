@@ -1,6 +1,7 @@
-/* // Clock update
-   Update text of #currentDay with dayjs formatted to ddd, YYYY-MM-DD HH:MM
-*/
+// Callback to update the current time shown on the page
+function renderTime() {
+  $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
+}
 
 // WHEN I scroll down
 // THEN I am presented with timeblocks for standard business hours of 9am - 5pm
@@ -59,4 +60,6 @@ $(function () {
   // TODO: Add code to display the current date in the header of the page.
     setInterval(clock update, 1000)
   */
+ renderTime();
+ setInterval(renderTime, 1000);
 });
