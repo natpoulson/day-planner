@@ -1,3 +1,40 @@
+/* // Clock update
+   Update text of #currentDay with dayjs formatted to ddd, YYYY-MM-DD HH:MM
+*/
+
+// WHEN I scroll down
+// THEN I am presented with timeblocks for standard business hours of 9am - 5pm
+// WHEN I view the timeblocks for that day
+// THEN each timeblock is color coded to indicate whether it is in the past, present, or future
+/*
+  Factory function - Create Time Block
+    Generate Template Literal string of prefab block, populate with:
+    - Time
+    - Any existing events from storage
+    - Assign classes relativ to current time
+
+    Would this be better as a class? I think so.
+      - Define the base template as a static property
+      - Class instances can store
+        - Designated timeframe
+        - State
+        - Event text (if any)
+        - Methods for
+          - Clearing
+          - Updating ( proc this on timer )
+*/
+
+// WHEN I click into a timeblock
+// THEN I can enter an event
+//  This could just be a setter on the time block class
+
+// WHEN I click the save button for that timeblock
+// THEN the text for that event is saved in local storage
+//  This can be part of the event class
+
+// WHEN I refresh the page
+// THEN the saved events persist
+
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
@@ -18,6 +55,8 @@ $(function () {
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
-  //
+  /*
   // TODO: Add code to display the current date in the header of the page.
+    setInterval(clock update, 1000)
+  */
 });
