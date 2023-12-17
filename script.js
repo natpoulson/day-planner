@@ -24,6 +24,37 @@ function renderTime() {
           - Clearing
           - Updating ( proc this on timer )
 */
+class Timeblock {
+  hour = {
+    actual: 9,
+    formatted: () => {
+      // TODO - Return the pretty representation of the hour (h a)
+    }
+  };
+  description = "";
+  // Template literal that is used to present the timeblock within the DOM
+  template = `<div id="hour-${this.hour.actual}" class="row time-block ${this.timeframe}">
+  <div class="col-2 col-md-1 hour text-center py-3">${this.hour.formatted}</div>
+  <textarea class="col-8 col-md-10 description" rows="3">${this.description}</textarea>
+  <button class="btn saveBtn col-2 col-md-1" aria-label="save">
+    <i class="fas fa-save" aria-hidden="true"></i>
+  </button>
+</div>`;
+
+  get timeframe() {
+    // TODO - Check the hour.actual against the current time
+    //        Return 'past', 'present' or 'future' depending on relation to current hour from dayjs
+  }
+
+  set description(desc) {
+    // TODO - Setter
+    this.description = desc;
+  }
+
+  // TODO - Constructor method
+
+  // TODO - Save method
+}
 
 // WHEN I click into a timeblock
 // THEN I can enter an event
