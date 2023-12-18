@@ -3,6 +3,9 @@ function renderTime() {
   $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
 }
 
+// Define a 'calendar' array that will be used to keep track of all the time blocks
+const calendar = [];
+
 // WHEN I scroll down
 // THEN I am presented with timeblocks for standard business hours of 9am - 5pm
 // WHEN I view the timeblocks for that day
@@ -28,7 +31,16 @@ class Timeblock {
   hour = {
     actual: 9,
     formatted: () => {
-      // TODO - Return the pretty representation of the hour (h a)
+      if (hour.actual > 12) {
+        // Return hours later than 12:00 in 12-hour notation
+        return `${hour.actual - 12} PM`;
+      }
+      if (hour.actual === 12) {
+        // Return as-is (since otherwise it would become 0 PM)
+        return `${hour.actual} PM`;
+      }
+      // Fallthrough default
+      return `${hour.actual} AM`;
     }
   };
   // Template literal that is used to present the timeblock within the DOM
@@ -41,7 +53,7 @@ class Timeblock {
 </div>`;
 
   get timeframe() {
-    const currentHour = Number.parseInt(dayjs().format('HH'));
+    const currentHour = dayjs.hour();
     if (this.hour.actual > currentHour) {
       return 'Future';
     }
