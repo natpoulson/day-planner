@@ -31,7 +31,6 @@ class Timeblock {
       // TODO - Return the pretty representation of the hour (h a)
     }
   };
-  description = "";
   // Template literal that is used to present the timeblock within the DOM
   template = `<div id="hour-${this.hour.actual}" class="row time-block ${this.timeframe}">
   <div class="col-2 col-md-1 hour text-center py-3">${this.hour.formatted}</div>
@@ -42,8 +41,18 @@ class Timeblock {
 </div>`;
 
   get timeframe() {
-    // TODO - Check the hour.actual against the current time
-    //        Return 'past', 'present' or 'future' depending on relation to current hour from dayjs
+    const currentHour = Number.parseInt(dayjs().format('HH'));
+    if (this.hour.actual > currentHour) {
+      return 'Future';
+    }
+    if (this.hour.actual === currentHour) {
+      return 'Present';
+    }
+    if (this.hour.actual < currentHour) {
+      return 'Past';
+    }
+
+    return null;
   }
 
   set description(desc) {
