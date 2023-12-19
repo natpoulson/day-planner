@@ -28,8 +28,13 @@ const calendar = [];
           - Updating ( proc this on timer )
 */
 class Timeblock {
+  static default = {
+    earliest: 9,
+    latest: 17
+  };
+
   hour = {
-    actual: 9,
+    actual: Timeblock.default.earliest,
     formatted: () => {
       if (hour.actual > 12) {
         // Return hours later than 12:00 in 12-hour notation
@@ -43,6 +48,7 @@ class Timeblock {
       return `${hour.actual} AM`;
     }
   };
+  description = "";
   // Template literal that is used to present the timeblock within the DOM
   template = `<div id="hour-${this.hour.actual}" class="row time-block ${this.timeframe}">
   <div class="col-2 col-md-1 hour text-center py-3">${this.hour.formatted}</div>
@@ -67,12 +73,24 @@ class Timeblock {
     return null;
   }
 
-  set description(desc) {
-    // TODO - Setter
-    this.description = desc;
-  }
+  constructor(hour, description = "") {
+    try {
+      if (typeof hour !== 'number') {
+        throw "The hour passed wasn't a number.";
+      }
+      if (hour < Timeblock.default.earliest || hour > Timeblock.default.latest) {
+        throw `The hour passed is outside defined bounds.
+        Expected: Earliest: ${Timeblock.default.earliest}, Latest: ${Timeblock.default.latest}.
+        Received: ${hour}.`;
+      }
 
-  // TODO - Constructor method
+    } catch (err) {
+      console.error("Unable to create the Timeblock: ", err);
+      return undefined;
+    }
+    this.hour.actual = hour;
+    this.description = description;
+  }
 
   // TODO - Save method
 }
