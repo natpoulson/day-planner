@@ -3,8 +3,39 @@ function renderTime() {
   $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
 }
 
-// Define a 'calendar' array that will be used to keep track of all the time blocks
-const calendar = [];
+class Calendar {
+  // This is the working set for the 
+  static set = [];
+
+  static init() {
+    // Clear the set if not already done
+    Calendar.set = [];
+
+    // Generate a clean batch of Timeblocks
+    for (let i = Timeblock.default.earliest; i <= Timeblock.default.latest; i++) {
+      Calendar.set.push(new Timeblock(i));
+    }
+  }
+
+  static load() {
+    // Check if there is anything in localStorage
+    if (typeof localStorage.getItem("day-planner-calendar") !== null) {
+      // Parse the localStorage and generate Timeblocks
+      for (const item of (JSON.parse(localStorage.getItem("day-planner-calendar")))) {
+        Calendar.set.push(new Timeblock(item.hour.actual, item.description));
+      }
+      return;
+    }
+
+    // If the above check failed, then that means we need a fresh calendar. Call init.
+    Calendar.init();
+  }
+
+  static save() {
+    // Package the current calendar in localStorage
+    localStorage.setItem("day-planner-calendar", JSON.stringify(Calendar.set));
+  }
+}
 
 // WHEN I scroll down
 // THEN I am presented with timeblocks for standard business hours of 9am - 5pm
