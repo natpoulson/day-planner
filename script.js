@@ -33,18 +33,16 @@ class Timeblock {
   }
 
   get timeframe() {
-    const currentHour = dayjs().hour;
-    if (this.hour > currentHour) {
+    const currentHour = dayjs().hour();
+    if (currentHour < this.hour) {
       return 'future';
     }
-    if (this.hour === currentHour) {
+    if (currentHour === this.hour) {
       return 'present';
     }
-    if (this.hour < currentHour) {
+    if (currentHour > this.hour) {
       return 'past';
     }
-
-    return null;
   }
 
   constructor(hour, description = "") {
@@ -98,7 +96,7 @@ class Calendar {
 
   static save() {
     // Package the current calendar in localStorage
-    localStorage.setItem("day-planner-calendar", JSON.stringify(Calendar.blocks, ["hour", "description"]));
+    localStorage.setItem("day-planner-calendar", JSON.stringify(Calendar.blocks));
   }
 
   static render() {
@@ -106,7 +104,11 @@ class Calendar {
     for (const item of Calendar.blocks) {
       if (calendarEl.children().is(`#hour-${item.hour}`)) {
         const target = $(`#hour-${item.hour}`);
+        // Remove any existing classes for timeframe, then add the current one
+        target.removeClass(['past', 'present', 'future']).addClass(item.timeframe);
+        // Add formatted time to block
         target.children('.hour').text(item.hour.formatted);
+        // Add any events if specified
         target.children('textarea').val(item.description);
       } else {
         calendarEl.append(item.template);
@@ -119,10 +121,6 @@ class Calendar {
 function renderTime() {
   $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
 }
-
-// WHEN I click into a timeblock
-// THEN I can enter an event
-//  This could just be a blockster on the time block class
 
 // WHEN I click the save button for that timeblock
 // THEN the text for that event is saved in local storage
