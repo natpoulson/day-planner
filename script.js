@@ -1,10 +1,12 @@
-
+// Class for individual blocks of time
 class Timeblock {
+  // Static properties
   static config = {
     earliest: 9,
     latest: 17
   };
 
+  // Instance properties
   hour = Timeblock.config.earliest;
   description = "";
 
@@ -19,6 +21,7 @@ class Timeblock {
   </div>`;
   };
 
+  // Getters
   get formattedHour() {
     if (this.hour > 12) {
       // Return hours later than 12:00 in 12-hour notation
@@ -33,7 +36,11 @@ class Timeblock {
   }
 
   get timeframe() {
+    // Obtain the current hour
     const currentHour = dayjs().hour();
+
+    // Identify if in past, present, or future, then return the applicable timeframe.
+    // This will then be used to apply the corresponding class on the Timeblock
     if (currentHour < this.hour) {
       return 'future';
     }
@@ -45,11 +52,14 @@ class Timeblock {
     }
   }
 
+  // Class constructor
   constructor(hour, description = "") {
     try {
+      // Ensure the hour paramater is a number
       if (typeof hour !== 'number') {
         throw "The hour passed wasn't a number.";
       }
+      // Ensure the parameter is within the configured boundaries
       if (hour < Timeblock.config.earliest || hour > Timeblock.config.latest) {
         throw `The hour passed is outside defined bounds.
         Expected: Earliest: ${Timeblock.config.earliest}, Latest: ${Timeblock.config.latest}.
@@ -57,9 +67,12 @@ class Timeblock {
       }
 
     } catch (err) {
+      // Generate an error explaining why the object couldn't be created
       console.error("Unable to create the Timeblock: ", err);
       return undefined;
     }
+
+    // Resolve the parameters
     this.hour = hour;
     this.description = description;
   }
@@ -99,18 +112,32 @@ class Calendar {
     localStorage.setItem("day-planner-calendar", JSON.stringify(Calendar.blocks));
   }
 
-  static render() {
+  static update(event) {
+    // TODO: Callback method to update the Calendar.blocks structure with a new description when saved.
+  }
+
+  static render(delta = false) {
+    // Define the container for the rendering logic
     const calendarEl = $('#calendar');
+
     for (const item of Calendar.blocks) {
+      // Check if there are already children in the DOM that can be manipulated instead of generating a fresh batch
       if (calendarEl.children().is(`#hour-${item.hour}`)) {
         const target = $(`#hour-${item.hour}`);
+
         // Remove any existing classes for timeframe, then add the current one
         target.removeClass(['past', 'present', 'future']).addClass(item.timeframe);
+        if (delta) {
+          // Terminate the method early if set to render deltas only
+          return;
+        }
+
         // Add formatted time to block
         target.children('.hour').text(item.hour.formatted);
         // Add any events if specified
         target.children('textarea').val(item.description);
       } else {
+        // Propagate the container with all time blocks
         calendarEl.append(item.template);
       }
     }
@@ -119,23 +146,25 @@ class Calendar {
 
 // Callback to update the current time shown on the page
 function renderTime() {
+  // Invokes delta render so that only the timeframe updates
+  Calendar.render(true);
   $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
 }
 
 // WHEN I click the save button for that timeblock
 // THEN the text for that event is saved in local storage
-//  This can be part of the event code below
-
-// WHEN I refresh the page
-// THEN the saved events persist
+// This can be part of the event code below
 
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
 $(function () {
   // Initialisers
+  // Generate a fresh set of data
   Calendar.init();
+  // Replace if there's data in localstorage
   Calendar.load();
+  // Commit the structure to localstorage (only really applicable to fresh loads)
   Calendar.save();
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
@@ -143,20 +172,7 @@ $(function () {
   // function? How can DOM traversal be used to get the "hour-x" id of the
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and sets
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  /*
-  // TODO: Add code to display the current date in the header of the page.
-    setInterval(clock update, 1000)
-  */
+
   renderTime();
   setInterval(renderTime, 1000);
 });
