@@ -4,7 +4,7 @@ function renderTime() {
 }
 
 class Calendar {
-  // This is the working set for the 
+  // This is the working set for the calendar
   static set = [];
 
   static init() {
@@ -18,46 +18,49 @@ class Calendar {
   }
 
   static load() {
-    // Check if there is anything in localStorage
-    if (typeof localStorage.getItem("day-planner-calendar") !== null) {
-      // Parse the localStorage and generate Timeblocks
-      for (const item of (JSON.parse(localStorage.getItem("day-planner-calendar")))) {
-        Calendar.set.push(new Timeblock(item.hour.actual, item.description));
-      }
-      return;
-    }
+    // Make sure the calendar's empty first
+    if (!Calendar.set) {
+      // Check if there is anything in localStorage as well
+      if (typeof localStorage.getItem("day-planner-calendar") !== null) {
+        // Parse the localStorage and generate Timeblocks
+        for (const item of (JSON.parse(localStorage.getItem("day-planner-calendar")))) {
+          // Populate the calendar with every block from the localStorage
+          Calendar.set.push(new Timeblock(item.hour.actual, item.description));
+        }
 
-    // If the above check failed, then that means we need a fresh calendar. Call init.
-    Calendar.init();
+        Calendar.render();
+        return;
+      }
+
+      // If the above check failed, then that means we need a fresh calendar. Call init.
+      Calendar.init();
+      // Render the calendar on the DOM
+      Calendar.render();
+    }
   }
 
   static save() {
     // Package the current calendar in localStorage
     localStorage.setItem("day-planner-calendar", JSON.stringify(Calendar.set));
   }
+
+  static render() {
+    const calendarEl = $('#calendar');
+    for (const item of Calendar.set) {
+      // Check if there's already an element for that hour present, return the index if found
+      const domIndex = calendarEl.children.findIndex( a => {a.id === `hour-${item.hour.actual}`} );
+
+      // If an index was returned
+      if (domIndex > -1) {
+        // Update values of that element
+        calendarEl.children(domIndex).$('textarea').text(item.description);
+      }
+      // If there isn't, add the full template literal
+      calendarEl.children().add(item.template);
+    }
+  }
 }
 
-// WHEN I scroll down
-// THEN I am presented with timeblocks for standard business hours of 9am - 5pm
-// WHEN I view the timeblocks for that day
-// THEN each timeblock is color coded to indicate whether it is in the past, present, or future
-/*
-  Factory function - Create Time Block
-    Generate Template Literal string of prefab block, populate with:
-    - Time
-    - Any existing events from storage
-    - Assign classes relativ to current time
-
-    Would this be better as a class? I think so.
-      - Define the base template as a static property
-      - Class instances can store
-        - Designated timeframe
-        - State
-        - Event text (if any)
-        - Methods for
-          - Clearing
-          - Updating ( proc this on timer )
-*/
 class Timeblock {
   static default = {
     earliest: 9,
@@ -122,8 +125,6 @@ class Timeblock {
     this.hour.actual = hour;
     this.description = description;
   }
-
-  // TODO - Save method
 }
 
 // WHEN I click into a timeblock
@@ -132,7 +133,7 @@ class Timeblock {
 
 // WHEN I click the save button for that timeblock
 // THEN the text for that event is saved in local storage
-//  This can be part of the event class
+//  This can be part of the event code below
 
 // WHEN I refresh the page
 // THEN the saved events persist
