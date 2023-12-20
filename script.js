@@ -7,14 +7,17 @@ class Timeblock {
 
   hour = Timeblock.config.earliest;
   description = "";
+
   // Template literal that is used to present the timeblock within the DOM
-  template = `<div id="hour-${(this.hour)}" class="row time-block ${(this.timeframe)}">
-  <div class="col-2 col-md-1 hour text-center py-3">${(this.formattedHour)}</div>
-  <textarea class="col-8 col-md-10 description" rows="3">${(this.description)}</textarea>
-  <button class="btn saveBtn col-2 col-md-1" aria-label="save">
-    <i class="fas fa-save" aria-hidden="true"></i>
-  </button>
-</div>`;
+  get template() {
+    return `<div id="hour-${this.hour}" class="row time-block ${this.timeframe}">
+    <div class="col-2 col-md-1 hour text-center py-3">${this.formattedHour}</div>
+    <textarea class="col-8 col-md-10 description" rows="3">${this.description}</textarea>
+    <button class="btn saveBtn col-2 col-md-1" aria-label="save">
+      <i class="fas fa-save" aria-hidden="true"></i>
+    </button>
+  </div>`;
+  };
 
   get formattedHour() {
     if (this.hour > 12) {
@@ -101,21 +104,19 @@ class Calendar {
   static render() {
     const calendarEl = $('#calendar');
     for (const item of Calendar.blocks) {
-      const target = $(`#hour-${item.hour}`);
-
-      if (target) {
+      if (calendarEl.children().is(`#hour-${item.hour}`)) {
+        const target = $(`#hour-${item.hour}`);
         target.children('.hour').text(item.hour.formatted);
         target.children('textarea').val(item.description);
       } else {
-        calendarEl.append(item.description);
+        calendarEl.append(item.template);
       }
     }
   }
 }
 
 // Callback to update the current time shown on the page
-function renderAll() {
-  Calendar.render();
+function renderTime() {
   $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
 }
 
@@ -158,6 +159,6 @@ $(function () {
   // TODO: Add code to display the current date in the header of the page.
     setInterval(clock update, 1000)
   */
-  renderAll();
-  setInterval(renderAll, 1000);
+  renderTime();
+  setInterval(renderTime, 1000);
 });
