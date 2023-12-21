@@ -166,7 +166,7 @@ class Calendar {
 function renderTime() {
   // Invokes delta render so that only the timeframe updates
   Calendar.render(true);
-  $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
+  $('#currentDay').text(dayjs().format('dddd | YYYY-MM-DD | hh:mm a'));
 }
 
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
