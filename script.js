@@ -169,10 +169,6 @@ function renderTime() {
   $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
 }
 
-// WHEN I click the save button for that timeblock
-// THEN the text for that event is saved in local storage
-// This can be part of the event code below
-
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
@@ -185,8 +181,10 @@ $(function () {
   // Commit the structure to localstorage (only really applicable to fresh loads)
   Calendar.save();
 
+  // Event listener for save buttons
   $('#calendar').on("click", "button", Calendar.update);
 
+  // First meaningful render of time and timeframe status, initialise timer
   renderTime();
   setInterval(renderTime, 1000);
 });
