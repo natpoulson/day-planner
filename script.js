@@ -113,7 +113,25 @@ class Calendar {
   }
 
   static update(event) {
-    // TODO: Callback method to update the Calendar.blocks structure with a new description when saved.
+    // Prevent caller from bubbling up further
+    event.stopPropagation();
+
+    // Obtain the ID of the parent node
+    const parentID = event.currentTarget.parentNode.id;
+
+    // Get the the block that corresponds to the hour
+    const target = Calendar.blocks.find(a => {
+      return `hour-${a.hour}` === parentID;
+    });
+
+    // Extract the text entered from the textarea
+    const sourceText = $(`#hour-${target.hour}`).children('textarea').val();
+    
+    // Update the description for that element
+    target.description = sourceText;
+
+    // Save the current structure to localStorage
+    Calendar.save();
   }
 
   static render(delta = false) {
@@ -166,12 +184,8 @@ $(function () {
   Calendar.load();
   // Commit the structure to localstorage (only really applicable to fresh loads)
   Calendar.save();
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
+
+  $('#calendar').on("click", "button", Calendar.update);
 
   renderTime();
   setInterval(renderTime, 1000);
