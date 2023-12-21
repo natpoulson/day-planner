@@ -145,15 +145,12 @@ class Calendar {
 
         // Remove any existing classes for timeframe, then add the current one
         target.removeClass(['past', 'present', 'future']).addClass(item.timeframe);
-        if (delta) {
-          // Terminate the method early if set to render deltas only
-          return;
+        if (!delta) {
+          // Add formatted time to block
+          target.children('.hour').text(item.hour.formatted);
+          // Add any events if specified
+          target.children('textarea').val(item.description);
         }
-
-        // Add formatted time to block
-        target.children('.hour').text(item.hour.formatted);
-        // Add any events if specified
-        target.children('textarea').val(item.description);
       } else {
         // Propagate the container with all time blocks
         calendarEl.append(item.template);
@@ -166,12 +163,8 @@ class Calendar {
 function renderTime() {
   // Invokes delta render so that only the timeframe updates
   Calendar.render(true);
-  $('#currentDay').text(dayjs().format('dddd, YYYY-MM-DD HH:mm'));
+  $('#currentDay').text(dayjs().format('dddd | YYYY-MM-DD | hh:mm a'));
 }
-
-// WHEN I click the save button for that timeblock
-// THEN the text for that event is saved in local storage
-// This can be part of the event code below
 
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
@@ -185,8 +178,10 @@ $(function () {
   // Commit the structure to localstorage (only really applicable to fresh loads)
   Calendar.save();
 
+  // Event listener for save buttons
   $('#calendar').on("click", "button", Calendar.update);
 
+  // First meaningful render of time and timeframe status, initialise timer
   renderTime();
   setInterval(renderTime, 1000);
 });
