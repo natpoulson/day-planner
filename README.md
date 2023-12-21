@@ -17,13 +17,16 @@ Skills leveraged in this app include:
 ## Preview
 A screenshot of the app on first time use
 
-![A screenshot of part of the app from the first time loaded, showing a partially redacted date/time stamp, and part of the event blocks underneath](./project/preview-001.png)
+![A screenshot of part of the app from the first time loaded](./project/preview-001.png)
 
 A screenshot of the app demonstrating data being held in local storage
 
 ![A screenshot of the app with a populated event, and its corresponding object reference in local storage](./project/preview-002.png)
 
 ## Usage
+This page has the following features
+- Real-time clock
+- Time-relative 
 
 ## Credits
 - Starter code (`index.html`, `style.css`, `script.js`) provided by University of Sydney and edX as part of the Online Coding Bootcamp

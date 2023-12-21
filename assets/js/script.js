@@ -145,15 +145,12 @@ class Calendar {
 
         // Remove any existing classes for timeframe, then add the current one
         target.removeClass(['past', 'present', 'future']).addClass(item.timeframe);
-        if (delta) {
-          // Terminate the method early if set to render deltas only
-          return;
+        if (!delta) {
+          // Add formatted time to block
+          target.children('.hour').text(item.hour.formatted);
+          // Add any events if specified
+          target.children('textarea').val(item.description);
         }
-
-        // Add formatted time to block
-        target.children('.hour').text(item.hour.formatted);
-        // Add any events if specified
-        target.children('textarea').val(item.description);
       } else {
         // Propagate the container with all time blocks
         calendarEl.append(item.template);
